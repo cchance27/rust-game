@@ -1,9 +1,35 @@
 [package]
 name = "rust-game"
-version = "0.1.0"
+version = "0.0.1"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.dev]
+opt-level = 1
+
+[profile.release]
+lto = true #"thin"
+strip = true
+codegen-units = 1
+panic = "abort"
+
+#https://github.com/zkat/awesome-bevy
 
 [dependencies]
-bevy = { version = "0.10.1", features = ["trace"] }
+bevy_editor_pls = "0.4.0"
+bevy = { version = "0.10.1", features = ["trace", "png"] }
+bevy_mod_picking = { version = "0.13.0", features = ["highlight"] }
+bevy_rapier3d = { version = "0.21.0", features = [ "simd-stable", "debug-render-3d" ] }
+#bevy_hanabi - particles
+#kayak-ui - ui
+#rapier3d_f64 - physics
+#bevy_asset_loader - extended asset loading
+#oxidized_navigation - path finding
+#bevy_kira_audio - audio 
+#Kurinji - input mapping
+#bevy_easings - easing between things, pulsing etc
+
+#bevy-inspector-egui = { version = "0.18.3", features = ["highlight_changes"] }
+#bevy_prototype_debug_lines = { version = "0.10.1", features = ["3d"] }
