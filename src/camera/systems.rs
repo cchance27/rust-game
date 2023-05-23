@@ -8,7 +8,7 @@ use bevy_mod_picking::prelude::*;
 pub fn spawn_camera(mut command: Commands) {
     command.spawn(
         Camera3dBundle {
-            transform: Transform::from_xyz(10.0, 0.0, 0.0)
+            transform: Transform::from_xyz(10.0, 10.0, 0.0)
                 .looking_at(Vec3::new(0.0, 0.0, 0.0), Vec3::Y),
             projection: Projection::Perspective(PerspectiveProjection::default()),
             ..default()

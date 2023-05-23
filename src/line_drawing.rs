@@ -6,6 +6,7 @@ pub struct LineMaterial {
     #[uniform(0)]
     pub color: Color,
 }
+
 impl Material for LineMaterial {
     fn fragment_shader() -> ShaderRef {
         "shaders/line_material.wgsl".into()
