@@ -22,10 +22,9 @@ bevy_editor_pls = "0.4.0"
 bevy = { version = "0.10.1", features = ["trace", "png"] }
 bevy_mod_picking = { version = "0.13.0", features = ["highlight"] }
 bevy_rapier3d = { version = "0.21.0", features = [ "simd-stable", "debug-render-3d" ] }
-bevy_rand = "0.1.0"
-rand_chacha = { version = "0.3.1", features = ["simd"] }
-rand_core = "0.6.4"
 bevy_turborand = { version = "0.5.0", features = ["rand"] }
+bevy_mod_gizmos = { git = "https://github.com/DGriffin91/bevy_mod_gizmo", commit = "81fe53caa1f777b3c0c9396d81b28ad166f3c6fe" }
+
 #bevy_hanabi - particles
 #kayak-ui - ui
 #rapier3d_f64 - physics
