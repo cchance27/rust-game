@@ -69,12 +69,10 @@ pub fn handle_mouse_input_selection(
                 }
             } else {
                 // MultiSect all in the box
-                selectable.iter().filter(|(e, gt)| {
+                selectable.iter().filter(|(_e, gt)| {
                     let tf = gt.translation();
                     let within_x = (selecting.first_click.x < tf.x && selecting.last_click.x > tf.x) || (selecting.last_click.x < tf.x && selecting.first_click.x > tf.x);
-                    dbg!(within_x);
                     let within_z =  (selecting.first_click.z < tf.z && selecting.last_click.z > tf.z) || (selecting.last_click.z < tf.z && selecting.first_click.z > tf.z);
-                    dbg!(within_z);
 
                     within_x && within_z
                 }).for_each(|valid|{

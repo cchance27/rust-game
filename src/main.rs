@@ -3,8 +3,12 @@ use bevy::{
     pbr::{DirectionalLightShadowMap},
     prelude::{*},
 };
+use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
+
+use bevy_turborand::rng::*;
 use bevy_rapier3d::{prelude::*};
 use bevy_editor_pls::prelude::*;
+
 mod line_drawing;
 mod camera;
 mod selection;
@@ -15,17 +19,18 @@ use selection::{SelectionPlugin, components::Selectable};
 
 fn main() {
     App::new()
-        .insert_resource(Msaa::default())
-        .insert_resource(DirectionalLightShadowMap { size: 2048 })
+        //.insert_resource(Msaa::default())
+        //.insert_resource(DirectionalLightShadowMap { size: 2048 })
         .insert_resource(ClearColor(Color::BLACK))
         .insert_resource(AmbientLight {
             color: Color::WHITE,
             brightness: 0.2,
         })
         .add_plugins(DefaultPlugins)
-        //.add_plugins(DefaultPickingPlugins)
         .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
-        .add_plugin(RapierDebugRenderPlugin::default())
+        .add_plugin(LogDiagnosticsPlugin::default())
+        .add_plugin(FrameTimeDiagnosticsPlugin::default())
+        //.add_plugin(RapierDebugRenderPlugin::default())
         .add_plugin(EditorPlugin::default())
         .add_plugin(CameraPlugin)
         .add_plugin(SelectionPlugin)
@@ -35,26 +40,34 @@ fn main() {
         .run();
 }
 
+#[derive(Component)]
+struct Source;
+
 fn spawn_world(
     mut command: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) { 
     command
-    .spawn(Collider::cuboid(100.0, 0.1, 100.0))
-        .insert(PbrBundle {
+    .spawn(PbrBundle {
             mesh: meshes.add(Mesh::from(shape::Plane {
-                size: 100.0, 
+                size: 200.0, 
                 subdivisions: 1
             })),
             material: materials.add(Color::GREEN.into()),
             ..default()})
+        .insert(Collider::cuboid(100.0, 0.1, 100.0))
         .insert(RigidBody::Fixed)
-        .insert(TransformBundle::from(Transform::from_xyz(0.0, -2.0, 0.0)))
+        .insert(TransformBundle::from(Transform::from_xyz(0.0, -0.1, 0.0)))
         .insert(Name::new("Floor"));
-
-    create_ball(&mut command, &mut meshes, &mut materials, 0.5, Transform::from_xyz(0.0, 4.0, 0.0));
-    create_ball(&mut command, &mut meshes, &mut materials, 0.5, Transform::from_xyz(2.0, 2.0, 2.0));
+    
+    let rand = Rng::new();
+    for i in 0..1_000 {
+        let x = rand.i32(-99..=99) as f32;
+        let y =rand.i32(-99..=99) as f32;
+        create_ball(&mut command, &mut meshes, &mut materials, 0.5, Transform::from_xyz(x, 0.0, y));
+    }
+    
 }
 
 fn create_ball(command: &mut Commands, meshes: &mut ResMut<Assets<Mesh>>, materials: &mut ResMut<Assets<StandardMaterial>>, radius: f32, transform: Transform)  {
@@ -63,8 +76,8 @@ fn create_ball(command: &mut Commands, meshes: &mut ResMut<Assets<Mesh>>, materi
       .insert(PbrBundle {
                 mesh: meshes.add(Mesh::from(shape::UVSphere {
                     radius: radius - 0.001,
-                    sectors: 10, 
-                    stacks: 10
+                    sectors: 5, 
+                    stacks: 5
                 })),
                 material: materials.add(Color::RED.into()),
                 ..default()
