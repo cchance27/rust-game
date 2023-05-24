@@ -4,7 +4,7 @@ use bevy::{prelude::*, render::{render_resource::{ShaderRef, PrimitiveTopology, 
 #[uuid = "050ce6ac-080a-4d8c-b6b5-b5bab7560d8f"]
 pub struct LineMaterial {
     #[uniform(0)]
-    pub color: Color,
+    pub color: Color
 }
 
 impl Material for LineMaterial {
@@ -20,6 +20,7 @@ impl Material for LineMaterial {
     ) -> Result<(), SpecializedMeshPipelineError> {
         // This is the important part to tell bevy to render this material as a line between vertices
         descriptor.primitive.polygon_mode = PolygonMode::Line;
+        
         Ok(())
     }
 
@@ -41,6 +42,21 @@ impl Material for LineMaterial {
 
     fn prepass_fragment_shader() -> ShaderRef {
         ShaderRef::Default
+    }
+}
+
+
+pub struct Square(pub Vec3);
+
+impl From<Square> for Mesh {
+    fn from(value: Square) -> Self {
+        Mesh::from(LineStrip {
+            points: vec![
+                Vec3::ZERO, 
+                Vec3::new(0.0, 0.0, value.0.z),
+                value.0, 
+                Vec3::new(value.0.x, 0.0, 0.0), 
+                Vec3::ZERO ]})
     }
 }
 
