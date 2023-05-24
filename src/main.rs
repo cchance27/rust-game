@@ -1,10 +1,10 @@
-
+#![allow(unused_imports)]
+#![allow(unused_variables)]
 use bevy::{
     pbr::{DirectionalLightShadowMap},
     prelude::{*},
 };
 use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
-
 use bevy_turborand::rng::*;
 use bevy_rapier3d::{prelude::*};
 use bevy_editor_pls::prelude::*;
@@ -14,7 +14,6 @@ mod camera;
 mod selection;
 
 use camera::CameraPlugin;
-use line_drawing::*;
 use selection::{SelectionPlugin, components::Selectable};
 
 fn main() {
@@ -28,13 +27,12 @@ fn main() {
         })
         .add_plugins(DefaultPlugins)
         .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
-        .add_plugin(LogDiagnosticsPlugin::default())
-        .add_plugin(FrameTimeDiagnosticsPlugin::default())
+        //.add_plugin(LogDiagnosticsPlugin::default())
+        //.add_plugin(FrameTimeDiagnosticsPlugin::default())
         //.add_plugin(RapierDebugRenderPlugin::default())
         .add_plugin(EditorPlugin::default())
         .add_plugin(CameraPlugin)
         .add_plugin(SelectionPlugin)
-        .add_plugin(MaterialPlugin::<LineMaterial>::default())
         .add_startup_system(spawn_world)
 
         .run();

@@ -1,11 +1,11 @@
 use bevy::{prelude::*, window::PrimaryWindow};
 use bevy_rapier3d::prelude::RapierContext;
+use bevy_polyline::prelude::*;
 
 use crate::{
     camera::components::PlayerCamera, 
     screen_ray_to_entity, 
     line_drawing::{
-        LineMaterial, 
         Square
     }};
 
@@ -126,25 +126,31 @@ pub fn draw_selection_indicator(
 pub fn draw_selection_box(
     mut commands: Commands,
     mut selecting: ResMut<Selecting>,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<LineMaterial>>,
+    mut polyline_materials: ResMut<Assets<PolylineMaterial>>,
+    mut polylines: ResMut<Assets<Polyline>>,
 ) {
     // TODO: Replace pin to ground ith a projected test to draw shorter lines up and down hills.
     let mut local_pos = selecting.last_click - selecting.first_click;
     local_pos.y = 0.0;
 
     let y_offset = 0.02;
-
+    let poly = Square(local_pos).into();
+    
     if let Some(picking_mesh) = &selecting.picking_mesh {
         // We've already created a picking_box so just update it's mesh to the new size
-        let x = meshes.get_mut(picking_mesh).unwrap();
-        *x = Square(local_pos).into();
+        let x = polylines.get_mut(picking_mesh).unwrap();
+        *x = poly;
     } else {
         // This is the first time we've moved, so we need to generate the selection box object
-        let mesh = meshes.add(Square(local_pos).into());
-        let pickbox = commands.spawn(MaterialMeshBundle  {
-            mesh: mesh.clone(),
-            material: materials.add(LineMaterial { color: Color::WHITE }),
+        let mesh = polylines.add(Square(local_pos).into());
+        let pickbox = commands.spawn(PolylineBundle   {
+            polyline: mesh.clone(),
+            material: polyline_materials.add(PolylineMaterial { 
+                color: Color::ORANGE_RED, 
+                width: 100.0, 
+                perspective: true,
+                ..default()
+            }),
             transform: Transform::from_translation(selecting.first_click + Vec3::Y * y_offset),
             ..default()
         }).insert(Name::new("line")).id();
