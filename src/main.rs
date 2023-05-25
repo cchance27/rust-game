@@ -2,12 +2,13 @@
 #![allow(unused_variables)]
 use bevy::{
     pbr::{DirectionalLightShadowMap},
-    prelude::{*},
+    prelude::{*}, ecs::system::EntityCommands,
 };
 use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
 use bevy_turborand::rng::*;
 use bevy_rapier3d::{prelude::*};
 use bevy_editor_pls::prelude::*;
+use bevy_mod_gizmos::{prelude::Gizmos, GizmoConfig, GizmoPlugin};
 
 mod line_drawing;
 mod camera;
@@ -27,6 +28,7 @@ fn main() {
         })
         .add_plugins(DefaultPlugins)
         .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
+        .add_plugin(GizmoPlugin)
         //.add_plugin(LogDiagnosticsPlugin::default())
         //.add_plugin(FrameTimeDiagnosticsPlugin::default())
         //.add_plugin(RapierDebugRenderPlugin::default())
@@ -34,19 +36,31 @@ fn main() {
         .add_plugin(CameraPlugin)
         .add_plugin(SelectionPlugin)
         .add_startup_system(spawn_world)
-
+        .add_system(draw_gizmos)
         .run();
+}
+
+fn draw_gizmos(
+    balls: Query<&GlobalTransform, With<Player>>,
+    mut gizmos: Gizmos, 
+    time: Res<Time>
+) {
+    for ball in balls.iter() {
+        gizmos.ray(
+            ball.translation(),Vec3::new(1.0, 0.25, 0.0),Color::BLUE,
+        );
+    }
 }
 
 #[derive(Component)]
 struct Source;
 
 fn spawn_world(
-    mut command: Commands,
+    mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) { 
-    command
+    commands
     .spawn(PbrBundle {
             mesh: meshes.add(Mesh::from(shape::Plane {
                 size: 200.0, 
@@ -63,13 +77,18 @@ fn spawn_world(
     for i in 0..1_000 {
         let x = rand.i32(-99..=99) as f32;
         let y =rand.i32(-99..=99) as f32;
-        create_ball(&mut command, &mut meshes, &mut materials, 0.5, Transform::from_xyz(x, 0.0, y));
+        let _ = create_ball(&mut commands, Color::WHITE, &mut meshes, &mut materials, 0.5, Transform::from_xyz(x, 0.0, y));
     }
-    
+
+    let player_id = create_ball(&mut commands, Color::RED, &mut meshes, &mut materials, 0.5, Transform::from_xyz(0.1, 0.0, 0.1));
+    commands.entity(player_id).insert(Player);
 }
 
-fn create_ball(command: &mut Commands, meshes: &mut ResMut<Assets<Mesh>>, materials: &mut ResMut<Assets<StandardMaterial>>, radius: f32, transform: Transform)  {
-    command
+#[derive(Component)]
+struct Player;
+
+fn create_ball(commands: &mut Commands, color: Color, meshes: &mut ResMut<Assets<Mesh>>, materials: &mut ResMut<Assets<StandardMaterial>>, radius: f32, transform: Transform) -> Entity {
+    commands
       .spawn(RigidBody::Dynamic)
       .insert(PbrBundle {
                 mesh: meshes.add(Mesh::from(shape::UVSphere {
@@ -77,7 +96,7 @@ fn create_ball(command: &mut Commands, meshes: &mut ResMut<Assets<Mesh>>, materi
                     sectors: 5, 
                     stacks: 5
                 })),
-                material: materials.add(Color::RED.into()),
+                material: materials.add(color.into()),
                 ..default()
             })
       .insert(Collider::ball(radius))
@@ -85,7 +104,7 @@ fn create_ball(command: &mut Commands, meshes: &mut ResMut<Assets<Mesh>>, materi
       .insert(Restitution::coefficient(0.7))
       .insert(TransformBundle::from(transform))
       .insert(Selectable)
-      .insert(Name::new("Ball"));
+      .insert(Name::new("Ball")).id()
 }
 
 fn screen_ray_to_entity(camera: &Camera, rapier_context: &RapierContext, camera_location: &GlobalTransform, cursor_position: Vec2) -> Option<(Entity, Vec3)> {
