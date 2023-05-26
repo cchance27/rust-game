@@ -12,7 +12,7 @@ I'm using this project to learn Bevy and Rust as I begin to experiment outside o
 - oxidized_navigation - path finding
 - bevy_kira_audio - audio 
 - Kurinji - input mapping
-- bevy_easings - easing between things, pulsing etc
+- bevy_tweening (bevy_easings) - easing between things, pulsing etc
 - seldom_State state management 
 - bevy_wave_collapse wave collapse meshes
 - naga shader translator
