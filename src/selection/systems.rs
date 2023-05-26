@@ -129,7 +129,12 @@ pub fn draw_selection_box(
     mut polyline_materials: ResMut<Assets<PolylineMaterial>>,
     mut polylines: ResMut<Assets<Polyline>>,
 ) {
+    if selecting.first_click == selecting.last_click {
+        return;
+    }
+    
     // TODO: Replace pin to ground ith a projected test to draw shorter lines up and down hills.
+
     let mut local_pos = selecting.last_click - selecting.first_click;
     local_pos.y = 0.0;
 
