@@ -13,16 +13,30 @@ I'm using this project to learn Bevy and Rust as I begin to experiment outside o
 - bevy_kira_audio - audio 
 - Kurinji - input mapping
 - bevy_tweening (bevy_easings) - easing between things, pulsing etc
-- seldom_State state management 
-- bevy_wave_collapse wave collapse meshes
-- naga shader translator
-- naia networking
-- bevy_app_compute compute shaders
-
+- seldom_state - state management 
+- bevy_wave_collapse - wave collapse meshes
+- naga - shader translator
+- naia - networking
+- bevy_app_compute - compute shaders
+- cosmic-text - better text replaced in 0.11
+- bevy_spatial - spatial awareness
+  
 ## Concepts for learning/implementing possibly
-- spatial hash grid vs aabb
+- Spatial hash grid vs aabb for distance checking
 - Implementing LOD 
 - Tilescaper
 - Spiderman windows with internals
 - distance fields vs raycast
 - raymarching
+- deferred decals / deferred textures 
+  - https://therealmjp.github.io/posts/bindless-texturing-for-deferred-rendering-and-decals/
+- infinite wave function collapse / model synthesis 
+  - https://paulmerrell.org/model-synthesis/ 
+  - https://www.youtube.com/watch?v=DrTYmUtWWw4
+- nvidia new hair design https://3dvf.com/en/nvidia-unveils-an-interactive-hair-simulation-technique-powered-by-ai/
+- field of view
+- decals from mipmaps?
+  - https://github.com/DGriffin91/bevy_sponza_scene
+
+## Some cool bevy links
+- https://github.com/zkat/awesome-bevy
