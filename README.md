@@ -37,6 +37,11 @@ I'm using this project to learn Bevy and Rust as I begin to experiment outside o
 - field of view
 - decals from mipmaps?
   - https://github.com/DGriffin91/bevy_sponza_scene
-
+- shaders 
+  - https://www.shadertoy.com/results?query=&sort=newest&filter=
+- distance fields vs ray marching
+- using tokio with bevy ecs
+  - https://gist.github.com/shanesveller/81993a56931265b3b3f9f7b4ad707351#file-main-rs
+  
 ## Some cool bevy links
 - https://github.com/zkat/awesome-bevy

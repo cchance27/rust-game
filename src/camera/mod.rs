@@ -18,6 +18,6 @@ impl Plugin for CameraPlugin {
             wheel_sensitivity: 0.2,
         })
         .add_startup_system(spawn_camera)
-        .add_system(camera_movement);
+        .add_system(pan_orbit_camera);
     }
 }
