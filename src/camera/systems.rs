@@ -1,7 +1,8 @@
 use super::{components::PlayerCamera, resources::CameraSettings};
 use bevy::{
-    input::mouse::{MouseScrollUnit, MouseWheel, MouseMotion},
-    prelude::*, window::PrimaryWindow,
+    input::mouse::{MouseMotion, MouseScrollUnit, MouseWheel},
+    prelude::*,
+    window::PrimaryWindow,
 };
 use bevy_mod_picking::prelude::*;
 
@@ -75,13 +76,17 @@ pub fn pan_orbit_camera(
             let window = get_primary_window_size(&windows);
             let delta_x = {
                 let delta = rotation_move.x / window.x * std::f32::consts::PI * 2.0;
-                if pan_orbit.upside_down { -delta } else { delta }
+                if pan_orbit.upside_down {
+                    -delta
+                } else {
+                    delta
+                }
             };
             let delta_y = rotation_move.y / window.y * std::f32::consts::PI;
             let yaw = Quat::from_rotation_y(-delta_x);
             let pitch = Quat::from_rotation_x(-delta_y);
-            transform.rotation = yaw * transform.rotation; // rotate around global y axis
-            transform.rotation = transform.rotation * pitch; // rotate around local x axis
+            transform.rotation *= yaw; // rotate around global y axis
+            transform.rotation *= pitch; // rotate around local x axis
         } else if pan.length_squared() > 0.0 {
             any = true;
             // make panning distance independent of resolution and FOV,
@@ -107,7 +112,8 @@ pub fn pan_orbit_camera(
             // parent = x and y rotation
             // child = z-offset
             let rot_matrix = Mat3::from_quat(transform.rotation);
-            transform.translation = pan_orbit.focus + rot_matrix.mul_vec3(Vec3::new(0.0, 0.0, pan_orbit.radius));
+            transform.translation =
+                pan_orbit.focus + rot_matrix.mul_vec3(Vec3::new(0.0, 0.0, pan_orbit.radius));
         }
     }
 
@@ -118,8 +124,7 @@ pub fn pan_orbit_camera(
 
 fn get_primary_window_size(primary_window: &Query<&Window, With<PrimaryWindow>>) -> Vec2 {
     let window = primary_window.single();
-    let window = Vec2::new(window.width() as f32, window.height() as f32);
-    window
+    Vec2::new(window.width(), window.height())
 }
 
 /// Spawn a camera like this
@@ -129,18 +134,15 @@ pub fn spawn_camera(mut commands: Commands) {
 
     commands.spawn((
         Camera3dBundle {
-            transform: Transform::from_translation(translation)
-                .looking_at(Vec3::ZERO, Vec3::Y),
+            transform: Transform::from_translation(translation).looking_at(Vec3::ZERO, Vec3::Y),
             ..Default::default()
         },
         PanOrbitCamera {
             radius,
             ..Default::default()
         },
-        PlayerCamera, 
+        PlayerCamera,
         RaycastPickCamera::default(),
-        Name::new("PlayerCamera3d")
+        Name::new("PlayerCamera3d"),
     ));
 }
-
-

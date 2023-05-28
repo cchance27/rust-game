@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 
-
 #[derive(Component)]
 pub struct Selectable;
 
@@ -8,4 +7,4 @@ pub struct Selectable;
 pub struct PendingSelection;
 
 #[derive(Component)]
-pub struct SelectedUnit;
+pub struct SelectedUnit(pub Entity);
